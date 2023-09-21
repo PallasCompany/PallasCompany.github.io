@@ -23,3 +23,29 @@
     </main>
 </body>
 </html>
+
+<?php
+$server="localhost";
+$pemakai = "username";
+$password = "pass";
+$id_mysql = mysql_connect($server, $pemakai, $password);
+if (! $id_mysql)
+die("Tak dapat melakukan koneksi ke server MySQL");
+
+$db_databaseku = mysql_select_db("databaseku", $id_mysql);
+if (! $db_databaseku)
+die("Tak dapat mengakses database");
+
+// Bagian untuk membaca data
+$sql = "SELECT user, nama FROM tabelku";
+$hasil = mysql_query($sql, $id_mysql);
+if (! $hasil)
+die("Salah SQL");
+
+while ($baris = mysql_fetch_row($hasil))
+{
+$user = $baris[0];
+$nama = $baris[1];
+
+print("$nip - $nama");
+}
