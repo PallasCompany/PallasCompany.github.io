@@ -1,53 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Kalkulator Sederhana</title>
+<title>Aplikasi Kalkulator Online</title>
 </head>
 <body>
-    <h2>Kalkulator Sederhana</h2>
-    <form method="POST" action="kalkulator.html">
-        <input type="number" name="angka1" required>
-        <select name="operator" required>
-            <option value="+">+</option>
-            <option value="-">-</option>
-            <option value="*">*</option>
-            <option value="/">/</option>
-        </select>
-        <input type="number" name="angka2" required>
-        <input type="submit" name="hitung" value="Hitung">
-    </form>
+    <main>
+<!--Membuat Kolom Ke Tengah-->
+<article style="widht:40%;float:left:margin:40px 30%;text-align:center">
+    <h1>Aplikasi Kalkulator Online</h1>
+<form method="post" action="kalkulator.php">
+<!--Input Angka Dan Pemilihan Operasi-->
+<input type="text" size="1" name="x" id="x" />
+    <select name="hitung" id="hitung">
+        <option value="1">+</option>option>
+        <option value="2">-</option>option>
+        <option value="3">*</option>option>
+    </select><input type="text" size="1" name="y" id="y" />
+<!--Ini Bagian Proses-->
+<input type="submit" name="submit" value="=">&nbsp;&nbsp;0</form>
 
-    <?php
-    if(isset($_POST['hitung'])) {
-        $angka1 = $_POST['angka1'];
-        $angka2 = $_POST['angka2'];
-        $operator = $_POST['operator'];
-
-        switch($operator) {
-            case '+':
-                $hasil = $angka1 + $angka2;
-                break;
-            case '-':
-                $hasil = $angka1 - $angka2;
-                break;
-            case '*':
-                $hasil = $angka1 * $angka2;
-                break;
-            case '/':
-                if($angka2 == 0) {
-                    echo "Tidak bisa membagi dengan 0.";
-                } else {
-                    $hasil = $angka1 / $angka2;
-                }
-                break;
-            default:
-                echo "Operasi tidak valid.";
-        }
-
-        if(isset($hasil)) {
-            echo "Hasil: $angka1 $operator $angka2 = $hasil";
-        }
-    }
-    ?>
+</article>
+    </main>
 </body>
 </html>
