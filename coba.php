@@ -1,0 +1,61 @@
+<?php
+session_start(); // Mulai session
+
+if (isset($_POST['submit'])) {
+    $x = $_POST['x'];
+    $y = $_POST['y'];
+    $operator = $_POST['hitung'];
+
+    switch ($operator) {
+        case 'tambah':
+            $result = $x + $y;
+            break;
+        case 'kurang':
+            $result = $x - $y;
+            break;
+        case 'kali':
+            $result = $x * $y;
+            break;
+        default:
+            $result = "Operasi tidak valid";
+    }
+
+    $_SESSION['flash_message'] = "$result";
+    header("Location: kalku.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kalkulator Online</title>
+</head>
+<body>
+    <main>
+        <article style="width:40%; margin: 40px auto; text-align:center;">
+            <h1>Aplikasi Kalkulator Online</h1>
+            <form method="post" action="kalku.php">
+                <input type="text" size="10" name="x" id="x" required/>
+                <select name="hitung" id="hitung">
+                    <option value="tambah">+</option>
+                    <option value="kurang">-</option>
+                    <option value="kali">x</option>
+                </select>
+                <input type="text" size="10" name="y" id="y" required/>
+
+                <input type="submit" name="submit" value="Hitung"/>&nbsp;&nbsp;<span id="result"><br><br>Hasil perhitungan: 
+                    <?php
+                    if (isset($_SESSION['flash_message'])) {
+                        echo $_SESSION['flash_message'];
+                        unset($_SESSION['flash_message']);
+                    }
+                    ?>
+                </span>
+            </form>
+        </article>
+    </main>
+</body>
+</html>
