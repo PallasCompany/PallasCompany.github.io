@@ -1,0 +1,66 @@
+<?php
+// Inisialisasi saldo awal
+$saldo_awal = 100000000;
+
+// Inisialisasi array untuk menyimpan data peminjaman dan pengembalian
+$data_peminjaman = [];
+$data_pengembalian = [];
+
+// Fungsi untuk mengurangi saldo
+function kurangiSaldo($jumlah) {
+    global $saldo_awal;
+    $saldo_awal -= $jumlah;
+}
+
+// Fungsi untuk menambah saldo
+function tambahSaldo($jumlah) {
+    global $saldo_awal;
+    $saldo_awal += $jumlah;
+}
+
+// Menghandle formulir peminjaman
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit_peminjaman"])) {
+    $nama = $_POST["nama"];
+    $no_ktp = $_POST["no_ktp"];
+    $tgl_lahir = $_POST["tgl_lahir"];
+    $jumlah_peminjaman = $_POST["jumlah_peminjaman"];
+    $jatuh_tempo = $_POST["jatuh_tempo"];
+
+    // Validasi data peminjaman
+
+    // Kurangkan jumlah peminjaman dari saldo
+    kurangiSaldo($jumlah_peminjaman);
+
+    // Simpan data peminjaman
+    $data_peminjaman[] = [
+        "nama" => $nama,
+        "no_ktp" => $no_ktp,
+        "tgl_lahir" => $tgl_lahir,
+        "jumlah_peminjaman" => $jumlah_peminjaman,
+        "jatuh_tempo" => $jatuh_tempo
+    ];
+
+    echo "Peminjaman berhasil.";
+}
+
+// Menghandle formulir pengembalian
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit_pengembalian"])) {
+    $nama = $_POST["nama"];
+    $no_ktp = $_POST["no_ktp"];
+    $jumlah_pengembalian = $_POST["jumlah_pengembalian"];
+
+    // Validasi data pengembalian
+
+    // Tambahkan jumlah pengembalian ke saldo
+    tambahSaldo($jumlah_pengembalian);
+
+    // Simpan data pengembalian
+    $data_pengembalian[] = [
+        "nama" => $nama,
+        "no_ktp" => $no_ktp,
+        "jumlah_pengembalian" => $jumlah_pengembalian
+    ];
+
+    echo "Pengembalian berhasil.";
+}
+?>
