@@ -1,51 +1,61 @@
+<?php
+session_start(); // Mulai session
+
+if (isset($_POST['submit'])) {
+    $x = $_POST['x'];
+    $y = $_POST['y'];
+    $operator = $_POST['hitung'];
+
+    switch ($operator) {
+        case 'tambah':
+            $result = $x + $y;
+            break;
+        case 'kurang':
+            $result = $x - $y;
+            break;
+        case 'kali':
+            $result = $x * $y;
+            break;
+        default:
+            $result = "Operasi tidak valid";
+    }
+
+    $_SESSION['flash_message'] = "$result";
+    header("Location: kalku.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Aplikasi Kalkulator Online</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kalkulator Online</title>
 </head>
 <body>
     <main>
-<!--Membuat Kolom Ke Tengah-->
-<article style="widht:40%;float:left:margin:40px 30%;text-align:center">
-    <h1>Aplikasi Kalkulator Online</h1>
-<form method="post" action="kalkulator.php">
-<!--Input Angka Dan Pemilihan Operasi-->
-<input type="text" size="1" name="x" id="x" />
-    <select name="hitung" id="hitung">
-        <option value="1">+</option>option>
-        <option value="2">-</option>option>
-        <option value="3">*</option>option>
-    </select><input type="text" size="1" name="y" id="y" />
-<!--Ini Bagian Proses-->
-<input type="submit" name="submit" value="=">&nbsp;&nbsp;0</form>
+        <article style="width:40%; margin: 40px auto; text-align:center;">
+            <h1>Aplikasi Kalkulator Online</h1>
+            <form method="post" action="kalku.php">
+                <input type="text" size="10" name="x" id="x" required/>
+                <select name="hitung" id="hitung">
+                    <option value="tambah">+</option>
+                    <option value="kurang">-</option>
+                    <option value="kali">x</option>
+                </select>
+                <input type="text" size="10" name="y" id="y" required/>
 
-</article>
+                <input type="submit" name="submit" value="Hitung"/>&nbsp;&nbsp;<span id="result"><br><br>Hasil perhitungan: 
+                    <?php
+                    if (isset($_SESSION['flash_message'])) {
+                        echo $_SESSION['flash_message'];
+                        unset($_SESSION['flash_message']);
+                    }
+                    ?>
+                </span>
+            </form>
+        </article>
     </main>
 </body>
 </html>
-
-<?php
-$server="localhost";
-$pemakai = "username";
-$password = "pass";
-$id_mysql = mysql_connect($server, $pemakai, $password);
-if (! $id_mysql)
-die("Tak dapat melakukan koneksi ke server MySQL");
-
-$db_databaseku = mysql_select_db("databaseku", $id_mysql);
-if (! $db_databaseku)
-die("Tak dapat mengakses database");
-
-// Bagian untuk membaca data
-$sql = "SELECT user, nama FROM tabelku";
-$hasil = mysql_query($sql, $id_mysql);
-if (! $hasil)
-die("Salah SQL");
-
-while ($baris = mysql_fetch_row($hasil))
-{
-$user = $baris[0];
-$nama = $baris[1];
-
-print("$nip - $nama");
-}
