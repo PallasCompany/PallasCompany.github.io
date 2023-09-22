@@ -1,17 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Calculator</title>
+</head>
+<body>
+
 <?php
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "nama_database";
+// Inisialisasi saldo awal
+$saldo_awal = 100000000;
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Inisialisasi array untuk menyimpan data peminjaman dan pengembalian
+$data_peminjaman = [];
+$data_pengembalian = [];
 
-if ($conn->connect_error) {
-    die("Koneksi ke database gagal: " . $conn->connect_error);
+// Fungsi untuk mengurangi saldo
+function kurangiSaldo($jumlah) {
+    global $saldo_awal;
+    $saldo_awal -= $jumlah;
 }
-?>
 
-<?php
+// Fungsi untuk menambah saldo
+function tambahSaldo($jumlah) {
+    global $saldo_awal;
+    $saldo_awal += $jumlah;
+}
+
+// Menghandle formulir peminjaman
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit_peminjaman"])) {
     $nama = $_POST["nama"];
     $no_ktp = $_POST["no_ktp"];
@@ -19,65 +37,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit_peminjaman"])) 
     $jumlah_peminjaman = $_POST["jumlah_peminjaman"];
     $jatuh_tempo = $_POST["jatuh_tempo"];
 
-    // Lakukan validasi data
+    // Validasi data peminjaman
 
     // Kurangkan jumlah peminjaman dari saldo
-    $saldo_awal = 100000000; // Saldo awal
-    $saldo_akhir = $saldo_awal - $jumlah_peminjaman;
+    kurangiSaldo($jumlah_peminjaman);
 
-    // Simpan data peminjaman ke database
-    $sql = "INSERT INTO peminjaman (nama, no_ktp, tgl_lahir, jumlah_peminjaman, jatuh_tempo) VALUES ('$nama', '$no_ktp', '$tgl_lahir', '$jumlah_peminjaman', '$jatuh_tempo')";
-    if ($conn->query($sql) === TRUE) {
-        // Update saldo
-        $sql = "UPDATE saldo SET saldo = $saldo_akhir";
-        if ($conn->query($sql) === TRUE) {
-            echo "Peminjaman berhasil.";
-        } else {
-            echo "Error: " . $conn->error;
-        }
-    } else {
-        echo "Error: " . $conn->error;
-    }
+    // Simpan data peminjaman
+    $data_peminjaman[] = [
+        "nama" => $nama,
+        "no_ktp" => $no_ktp,
+        "tgl_lahir" => $tgl_lahir,
+        "jumlah_peminjaman" => $jumlah_peminjaman,
+        "jatuh_tempo" => $jatuh_tempo
+    ];
+
+    echo "Peminjaman berhasil.";
 }
-?>
 
-<?php
+// Menghandle formulir pengembalian
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit_pengembalian"])) {
     $nama = $_POST["nama"];
     $no_ktp = $_POST["no_ktp"];
     $jumlah_pengembalian = $_POST["jumlah_pengembalian"];
 
-    // Lakukan validasi data
+    // Validasi data pengembalian
 
     // Tambahkan jumlah pengembalian ke saldo
-    $saldo_awal = 100000000; // Saldo awal
-    $saldo_akhir = $saldo_awal + $jumlah_pengembalian;
+    tambahSaldo($jumlah_pengembalian);
 
-    // Simpan data pengembalian ke database
-    $sql = "INSERT INTO pengembalian (nama, no_ktp, jumlah_pengembalian) VALUES ('$nama', '$no_ktp', '$jumlah_pengembalian')";
-    if ($conn->query($sql) === TRUE) {
-        // Update saldo
-        $sql = "UPDATE saldo SET saldo = $saldo_akhir";
-        if ($conn->query($sql) === TRUE) {
-            echo "Pengembalian berhasil.";
-        } else {
-            echo "Error: " . $conn->error;
-        }
-    } else {
-        echo "Error: " . $conn->error;
-    }
-}
-?>
+    // Simpan data pengembalian
+    $data_pengembalian[] = [
+        "nama" => $nama,
+        "no_ktp" => $no_ktp,
+        "jumlah_pengembalian" => $jumlah_pengembalian
+    ];
 
-<?php
-// Ambil saldo terakhir dari database
-$sql = "SELECT saldo FROM saldo";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $saldo_terakhir = $row["saldo"];
-} else {
-    $saldo_terakhir = 0;
+    echo "Pengembalian berhasil.";
 }
 ?>
